@@ -317,7 +317,7 @@ done:
 static gboolean setup_huawei(struct modem_info *modem)
 {
 	const char *qmi = NULL, *mdm = NULL, *net = NULL;
-	const char *pcui = NULL, *diag = NULL;
+	const char *pcui = NULL, *diag = NULL, *gps = NULL;
 	GSList *list;
 
 	DBG("%s", modem->syspath);
@@ -332,26 +332,32 @@ static gboolean setup_huawei(struct modem_info *modem)
 				g_strcmp0(info->interface, "255/1/1") == 0 ||
 				g_strcmp0(info->interface, "255/2/1") == 0 ||
 				g_strcmp0(info->interface, "255/3/1") == 0 ||
-				g_strcmp0(info->interface, "255/1/49") == 0) {
+				g_strcmp0(info->interface, "255/1/49") == 0 ||
+				g_strcmp0(info->interface, "255/6/16") == 0) {
 			mdm = info->devnode;
 		} else if (g_strcmp0(info->label, "pcui") == 0 ||
 				g_strcmp0(info->interface, "255/1/2") == 0 ||
 				g_strcmp0(info->interface, "255/2/2") == 0 ||
 				g_strcmp0(info->interface, "255/2/18") == 0 ||
 				g_strcmp0(info->interface, "255/3/18") == 0 ||
-				g_strcmp0(info->interface, "255/1/50") == 0) {
+				g_strcmp0(info->interface, "255/1/50") == 0 ||
+				g_strcmp0(info->interface, "255/6/18") == 0) {
 			pcui = info->devnode;
 		} else if (g_strcmp0(info->label, "diag") == 0 ||
 				g_strcmp0(info->interface, "255/1/3") == 0 ||
 				g_strcmp0(info->interface, "255/2/3") == 0 ||
-				g_strcmp0(info->interface, "255/1/51") == 0) {
+				g_strcmp0(info->interface, "255/1/51") == 0 ||
+				g_strcmp0(info->interface, "255/6/19") == 0) {
 			diag = info->devnode;
 		} else if (g_strcmp0(info->interface, "255/1/8") == 0 ||
-				g_strcmp0(info->interface, "255/1/56") == 0) {
+				g_strcmp0(info->interface, "255/1/56") == 0 ||
+				g_strcmp0(info->interface, "255/6/22") == 0) {
 			net = info->devnode;
 		} else if (g_strcmp0(info->interface, "255/1/9") == 0 ||
 				g_strcmp0(info->interface, "255/1/57") == 0) {
 			qmi = info->devnode;
+		} else if (g_strcmp0(info->interface, "255/6/20") == 0){
+			gps = info->devnode;
 		} else if (g_strcmp0(info->interface, "255/255/255") == 0) {
 			if (g_strcmp0(info->number, "00") == 0)
 				mdm = info->devnode;
@@ -375,13 +381,14 @@ static gboolean setup_huawei(struct modem_info *modem)
 		return FALSE;
 
 done:
-	DBG("mdm=%s pcui=%s diag=%s qmi=%s net=%s", mdm, pcui, diag, qmi, net);
+	DBG("mdm=%s pcui=%s diag=%s qmi=%s net=%s gps=%s", mdm, pcui, diag, qmi, net, gps);
 
 	ofono_modem_set_string(modem->modem, "Device", qmi);
 	ofono_modem_set_string(modem->modem, "Modem", mdm);
 	ofono_modem_set_string(modem->modem, "Pcui", pcui);
 	ofono_modem_set_string(modem->modem, "Diag", diag);
 	ofono_modem_set_string(modem->modem, "NetworkInterface", net);
+	ofono_modem_set_string(modem->modem, "GPSDevice", gps);
 
 	return TRUE;
 }
